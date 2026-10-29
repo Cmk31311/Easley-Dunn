@@ -8,3 +8,6 @@
 # Runtime output — winston writes these; error.log contains stack traces
 /logs/
 
+
+# Dependencies — installed by npm, never committed
+node_modules/
