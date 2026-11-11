@@ -1,0 +1,17 @@
+# Cerberus — paste into the host Caddyfile (/home/seezle/Caddyfile).
+#
+# Needs network cerberus_edge (Caddy + cerberus_web + cerberus_api on it).
+# Not seezle_default.
+#
+# Ports below must match compose (API PORT, web listen port).
+
+cerberus.easleydunnproductions.com {
+	# /api/foo -> API /foo
+	handle_path /api* {
+		reverse_proxy cerberus_api:5000
+	}
+
+	handle {
+		reverse_proxy cerberus_web:80
+	}
+}
