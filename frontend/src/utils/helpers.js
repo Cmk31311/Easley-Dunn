@@ -38,15 +38,15 @@ export const getInitials = (name) => {
 };
 
 export const getAvatarColor = (name) => {
-  if (!name) return "bg-[#2563eb] text-white";
+  if (!name) return "bg-[#0a2540] text-white";
   const colors = [
-    "bg-[#2563eb] text-white", // Blue
-    "bg-[#059669] text-white", // Green
-    "bg-[#d97706] text-white", // Amber/Orange
-    "bg-[#e11d48] text-white", // Rose/Pink-Red
-    "bg-[#4f46e5] text-white", // Indigo
-    "bg-[#7c3aed] text-white", // Purple
-    "bg-[#db2777] text-white", // Pink
+    "bg-[#0a2540] text-white",
+    "bg-[#1e3a5f] text-white",
+    "bg-[#3b6d9a] text-white",
+    "bg-[#0d9488] text-white",
+    "bg-[#334155] text-white",
+    "bg-[#1e293b] text-white",
+    "bg-[#0f766e] text-white",
   ];
   let hash = 0;
   for (let i = 0; i < name.length; i++) {

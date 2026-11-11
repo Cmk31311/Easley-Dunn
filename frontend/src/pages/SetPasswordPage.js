@@ -18,7 +18,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ShieldCheck, Lock, RefreshCw, CheckCircle2, AlertCircle, LogOut, Eye, EyeOff } from "lucide-react";
+import { Lock, RefreshCw, CheckCircle2, AlertCircle, LogOut, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import PasswordRules from "../components/PasswordRules";
 import { MIN_LENGTH, passwordRules, passwordIsValid } from "../utils/passwordPolicy";
@@ -99,49 +99,49 @@ export default function SetPasswordPage({ mode = "invite" }) {
     }
   };
 
-  const card = "w-full max-w-[420px] bg-white border border-slate-200 rounded-2xl shadow-sm p-6";
+  const card = "w-full max-w-[420px] bg-card border border-border rounded-lg shadow-sm p-6";
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="flex flex-col items-center gap-4">
-        <div className="flex items-center gap-2.5 text-slate-900">
-          <span className="w-9 h-9 rounded-[10px] bg-blue-600 text-white flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5" />
+        <div className="flex items-center gap-2.5 text-foreground">
+          <span className="w-9 h-9 rounded-md bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+            C
           </span>
-          <span className="font-bold">Easley-Dunn Cerberus</span>
+          <span className="font-semibold tracking-wide">Cerberus</span>
         </div>
 
         {checking ? (
           <div className={`${card} text-center`}>
-            <RefreshCw className="w-6 h-6 mx-auto text-blue-600 animate-spin" />
+            <RefreshCw className="w-6 h-6 mx-auto text-info animate-spin" />
           </div>
         ) : problem ? (
           <div className={card}>
             <div className="flex items-start gap-2.5">
-              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
               <div>
-                <h1 className="m-0 text-base font-bold text-slate-900">This link cannot be used</h1>
-                <p className="mt-1 mb-0 text-sm text-slate-600">{problem}</p>
+                <h1 className="m-0 text-base font-bold text-foreground">This link cannot be used</h1>
+                <p className="mt-1 mb-0 text-sm text-muted-foreground">{problem}</p>
               </div>
             </div>
           </div>
         ) : done ? (
           <div className={card}>
             <div className="flex items-start gap-2.5">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
               <div>
-                <h1 className="m-0 text-base font-bold text-slate-900">{copy.doneHeading}</h1>
+                <h1 className="m-0 text-base font-bold text-foreground">{copy.doneHeading}</h1>
                 {user ? (
                   <>
-                    <p className="mt-1 mb-3 text-sm text-slate-600">
+                    <p className="mt-1 mb-3 text-sm text-muted-foreground">
                       This browser is already signed in as{" "}
-                      <strong className="font-semibold text-slate-900">{user.email}</strong>. Sign
+                      <strong className="font-semibold text-foreground">{user.email}</strong>. Sign
                       out to use {person.email} and the password you just chose.
                     </p>
                     <button
                       type="button"
                       onClick={logout}
-                      className="inline-flex h-9 px-3.5 items-center gap-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold cursor-pointer"
+                      className="inline-flex h-9 px-3.5 items-center gap-2 rounded-md bg-primary hover:opacity-90 text-white text-sm font-semibold cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                       Sign out
@@ -149,8 +149,8 @@ export default function SetPasswordPage({ mode = "invite" }) {
                   </>
                 ) : (
                   <>
-                    <p className="mt-1 mb-3 text-sm text-slate-600">Sign in with {person.email} and the password you just chose.</p>
-                    <Link to="/" className="inline-flex h-9 px-3.5 items-center rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold no-underline">
+                    <p className="mt-1 mb-3 text-sm text-muted-foreground">Sign in with {person.email} and the password you just chose.</p>
+                    <Link to="/" className="inline-flex h-9 px-3.5 items-center rounded-md bg-primary hover:opacity-90 text-white text-sm font-semibold no-underline">
                       Go to sign in
                     </Link>
                   </>
@@ -161,14 +161,14 @@ export default function SetPasswordPage({ mode = "invite" }) {
         ) : (
           <form onSubmit={submit} className={`${card} flex flex-col gap-4`}>
             <div>
-              <h1 className="m-0 text-base font-bold text-slate-900">{copy.heading(person)}</h1>
-              <p className="mt-1 mb-0 text-sm text-slate-600">{copy.blurb(person)}</p>
+              <h1 className="m-0 text-base font-bold text-foreground">{copy.heading(person)}</h1>
+              <p className="mt-1 mb-0 text-sm text-muted-foreground">{copy.blurb(person)}</p>
             </div>
 
-            <label className="flex flex-col gap-1 text-xs font-semibold uppercase text-slate-500">
+            <label className="flex flex-col gap-1 text-xs font-semibold uppercase text-muted-foreground">
               Password
               <span className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <Lock className="w-4 h-4 text-muted-foreground absolute left-3 top-2.5" />
                 <input
                   type={reveal ? "text" : "password"}
                   required
@@ -177,7 +177,7 @@ export default function SetPasswordPage({ mode = "invite" }) {
                   aria-describedby="password-rules"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-9 pl-9 pr-10 bg-slate-50 border border-slate-200 rounded-lg text-sm font-normal normal-case text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-9 pl-9 pr-10 bg-background border border-border rounded-lg text-sm font-normal normal-case text-foreground focus:bg-card focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 {/* Showing the password beats forcing a blind retype: the
                     person is alone with a one-time link, and a typo they
@@ -187,14 +187,14 @@ export default function SetPasswordPage({ mode = "invite" }) {
                   onClick={() => setReveal((v) => !v)}
                   aria-label={reveal ? "Hide password" : "Show password"}
                   aria-pressed={reveal}
-                  className="absolute right-2 top-1.5 w-6 h-6 flex items-center justify-center rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+                  className="absolute right-2 top-1.5 w-6 h-6 flex items-center justify-center rounded text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   {reveal ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </span>
             </label>
 
-            <label className="flex flex-col gap-1 text-xs font-semibold uppercase text-slate-500">
+            <label className="flex flex-col gap-1 text-xs font-semibold uppercase text-muted-foreground">
               Confirm password
               <input
                 type={reveal ? "text" : "password"}
@@ -202,18 +202,18 @@ export default function SetPasswordPage({ mode = "invite" }) {
                 aria-describedby="password-rules"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                className="h-9 px-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-normal normal-case text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-9 px-3 bg-background border border-border rounded-lg text-sm font-normal normal-case text-foreground focus:bg-card focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </label>
 
             <PasswordRules id="password-rules" rules={rules} />
 
-            {error && <p role="alert" className="m-0 px-3 py-2 rounded-lg bg-red-50 text-red-800 text-[13px]">{error}</p>}
+            {error && <p role="alert" className="m-0 px-3 py-2 rounded-lg bg-danger-soft text-danger-foreground text-[13px]">{error}</p>}
 
             <button
               type="submit"
               disabled={busy || !passwordIsValid(password, confirm)}
-              className="h-9 px-4 rounded-md bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer"
+              className="h-9 px-4 rounded-md bg-primary hover:opacity-90 disabled:opacity-50 text-white text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer"
             >
               {busy && <RefreshCw className="w-4 h-4 animate-spin" />}
               {copy.submit}

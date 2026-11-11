@@ -22,6 +22,7 @@ import OffboardAccessCard from "./OffboardAccessCard";
 import ConfirmModal from "./ConfirmModal";
 import ToastContainer from "./ToastContainer";
 import AuditTable from "./AuditTable";
+import { Button } from "./ui/button";
 import { fetchWithAuth } from "../utils/fetchWithAuth";
 import { summarize } from "../utils/connectorResults";
 
@@ -37,20 +38,40 @@ const TABS = [
   { id: "access", label: "Access control" },
   { id: "activity", label: "Activity" },
 ];
+const TAB_STORAGE_KEY = "cerberus-people-tab";
+
+function readSavedTab() {
+  try {
+    const value = sessionStorage.getItem(TAB_STORAGE_KEY);
+    if (TABS.some((t) => t.id === value)) return value;
+  } catch {
+    /* ignore */
+  }
+  return "details";
+}
 
 function Field({ label, children }) {
   return (
     <div>
-      <dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{label}</dt>
-      <dd className="m-0 mt-0.5 text-slate-900">{children}</dd>
+      <dt className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</dt>
+      <dd className="m-0 mt-0.5 text-foreground">{children}</dd>
     </div>
   );
 }
 
 export default function PersonDetail({ person, teams = [], services = [], onPersonChanged }) {
   const userId = person?.user_id;
-  const [tab, setTab] = useState("details");
+  const [tab, setTab] = useState(readSavedTab);
   const [editing, setEditing] = useState(false);
+
+  const selectTab = useCallback((next) => {
+    setTab(next);
+    try {
+      sessionStorage.setItem(TAB_STORAGE_KEY, next);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const [manualAccess, setManualAccess] = useState(new Set());
   const [automateAccess, setAutomateAccess] = useState(new Set());
@@ -480,52 +501,38 @@ export default function PersonDetail({ person, teams = [], services = [], onPers
 
 
   return (
-    <div className="flex flex-col gap-4">
-        <UserInfoCard selectedUser={selectedUser} teams={memberships} />
-
-        <div role="tablist" aria-label="User views" className="inline-flex gap-1 p-1 bg-slate-200/70 rounded-xl self-start">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={tab === t.id}
-              onClick={() => setTab(t.id)}
-              className={`min-h-[36px] px-3.5 rounded-lg text-[13px] font-semibold cursor-pointer ${
-                tab === t.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+    <div className="flex flex-col gap-5 ui-fade-in">
+        <UserInfoCard
+          selectedUser={selectedUser}
+          teams={memberships}
+          activeView={tab}
+          onViewChange={selectTab}
+        />
 
         {tab === "details" && (
-          <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="m-0 text-[15px] font-semibold">Details</h2>
-              <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setEditing(true)}
-                className="flex items-center gap-1.5 min-h-[36px] px-3 border border-slate-300 rounded-lg bg-white text-[13px] font-semibold cursor-pointer hover:bg-slate-50"
-              >
-                <Pencil className="w-3.5 h-3.5" /> Edit details
-              </button>
-              <button
-                type="button"
-                onClick={toggleStatus}
-                disabled={togglingStatus}
-                className={`flex items-center gap-1.5 min-h-[36px] px-3 border rounded-lg bg-white text-[13px] font-semibold cursor-pointer disabled:opacity-50 ${
-                  selectedUser.is_active ? "border-slate-300 text-red-700 hover:bg-red-50" : "border-slate-300 hover:bg-slate-50"
-                }`}
-              >
-                <Power className="w-3.5 h-3.5" />
-                {selectedUser.is_active ? "Deactivate" : "Activate"}
-              </button>
+          <div className="ui-panel p-6 flex flex-col gap-6">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="ui-section-title">Profile</h2>
+                <p className="m-0 mt-1 text-[12px] text-muted-foreground">Identity, status, and membership</p>
+              </div>
+              <div className="ui-toolbar">
+                <Button type="button" variant="outline" size="sm" onClick={() => setEditing(true)}>
+                  <Pencil /> Edit
+                </Button>
+                <Button
+                  type="button"
+                  variant={selectedUser.is_active ? "danger-outline" : "soft"}
+                  size="sm"
+                  onClick={toggleStatus}
+                  disabled={togglingStatus}
+                >
+                  <Power />
+                  {selectedUser.is_active ? "Deactivate" : "Activate"}
+                </Button>
               </div>
             </div>
-            <dl className="grid grid-cols-2 lg:grid-cols-4 gap-5 m-0">
+            <dl className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 m-0">
             <Field label="Email">{selectedUser.email}</Field>
             <Field label="Role">{ROLE_TITLES[selectedUser.Role] || selectedUser.Role || "—"}</Field>
             <Field label="Status">{selectedUser.is_active ? "Active" : "Inactive"}</Field>
@@ -539,16 +546,11 @@ export default function PersonDetail({ person, teams = [], services = [], onPers
               {selectedUser.hasPassword ? (
                 "Set"
               ) : (
-                <span className="flex flex-col items-start gap-1">
-                  <span className="text-amber-700">Not set — invited, cannot sign in yet</span>
-                  <button
-                    type="button"
-                    onClick={resendInvite}
-                    disabled={inviting}
-                    className="flex items-center gap-1.5 h-7 px-2 border border-slate-300 rounded-md bg-white text-xs font-medium disabled:opacity-50 cursor-pointer hover:bg-slate-50"
-                  >
-                    <Send className="w-3 h-3" /> {inviting ? "Sending…" : "Resend invite"}
-                  </button>
+                <span className="flex flex-col items-start gap-2">
+                  <span className="text-warning-foreground">Not set — invited, cannot sign in yet</span>
+                  <Button type="button" variant="outline" size="sm" onClick={resendInvite} disabled={inviting}>
+                    <Send /> {inviting ? "Sending…" : "Resend invite"}
+                  </Button>
                 </span>
               )}
             </Field>
@@ -556,8 +558,8 @@ export default function PersonDetail({ person, teams = [], services = [], onPers
             </dl>
 
             {inviteLink && (
-              <div className="border-t border-slate-100 pt-4">
-                <h3 className="m-0 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              <div className="border-t border-border pt-5">
+                <h3 className="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Invite link — pass this on yourself
                 </h3>
                 <div className="flex items-center gap-2">
@@ -565,31 +567,32 @@ export default function PersonDetail({ person, teams = [], services = [], onPers
                     readOnly
                     value={inviteLink}
                     onFocus={(e) => e.target.select()}
-                    className="flex-1 min-w-0 h-8 px-2.5 bg-slate-50 border border-slate-300 rounded-md text-[13px] font-mono"
+                    className="ui-input flex-1 min-w-0 h-9 font-mono text-[13px]"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
+                    size="sm"
                     onClick={() => { navigator.clipboard?.writeText(inviteLink); setLinkCopied(true); }}
-                    className="flex items-center gap-1.5 h-8 px-2.5 border border-slate-300 rounded-md bg-white text-[13px] font-medium cursor-pointer hover:bg-slate-50"
                   >
-                    {linkCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    {linkCopied ? <Check className="text-success" /> : <Copy />}
                     {linkCopied ? "Copied" : "Copy"}
-                  </button>
+                  </Button>
                 </div>
-                <p className="mt-1 mb-0 text-xs text-slate-500">Works once, and expires in seven days.</p>
+                <p className="mt-1.5 mb-0 text-xs text-muted-foreground">Works once, and expires in seven days.</p>
               </div>
             )}
 
-            <div className="border-t border-slate-100 pt-4">
-              <h3 className="m-0 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Teams</h3>
+            <div className="border-t border-border pt-5">
+              <h3 className="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Teams</h3>
               {memberships.length ? (
                 <ul className="m-0 p-0 list-none flex flex-col">
                   {memberships.map((t) => (
-                    <li key={t.team_id} className="flex items-center justify-between gap-3 py-2 border-b border-slate-100 last:border-b-0">
-                      <Link to={`/teams/${t.team_id}`} className="font-semibold text-blue-700 no-underline">
+                    <li key={t.team_id} className="flex items-center justify-between gap-3 py-2.5 border-b border-border last:border-b-0">
+                      <Link to={`/teams/${t.team_id}`} className="font-semibold text-primary no-underline hover:underline">
                         {t.name}
                       </Link>
-                      <span className="text-xs text-slate-600">
+                      <span className="text-xs text-muted-foreground">
                         {t.isLead ? "Lead" : "Member"}
                         {!t.is_active && " · archived"}
                       </span>
@@ -597,8 +600,8 @@ export default function PersonDetail({ person, teams = [], services = [], onPers
                   ))}
                 </ul>
               ) : (
-                <p className="m-0 text-slate-600">
-                  Not in any team. Add them from <Link to="/teams" className="text-blue-700 no-underline">Teams</Link>.
+                <p className="m-0 text-muted-foreground">
+                  Not in any team. Add them from <Link to="/teams" className="text-primary no-underline hover:underline">Teams</Link>.
                 </p>
               )}
             </div>

@@ -34,8 +34,8 @@ export default function TeamsSection() {
 
   return (
     <div className="flex-1 min-h-0 flex flex-col">
-      <div className="flex-shrink-0 flex flex-wrap items-center gap-3 px-6 pt-4">
-        <div role="tablist" aria-label="Team views" className="inline-flex gap-1 p-1 bg-slate-200/70 rounded-xl">
+      <div className="relative z-10 flex-shrink-0 flex flex-wrap items-center gap-3 px-7 pt-6">
+        <div role="tablist" aria-label="Team views" className="ui-tabs gap-4">
           {VIEWS.map(({ to, label, Icon }) => {
             const active = to === "/teams/map" ? onMap : !onMap;
             return (
@@ -44,11 +44,11 @@ export default function TeamsSection() {
                 to={to}
                 role="tab"
                 aria-selected={active}
-                className={`flex items-center gap-1.5 min-h-[36px] px-3 rounded-lg text-[13px] font-semibold no-underline transition-colors ${
-                  active ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                className={`ui-tab inline-flex items-center gap-1.5 no-underline ${
+                  active ? "text-foreground border-primary" : ""
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5" />
                 {label}
               </NavLink>
             );

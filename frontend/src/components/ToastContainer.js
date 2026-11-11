@@ -32,7 +32,7 @@ const STYLES = {
   },
   failed: {
     panel: "bg-[#fdf2f2] border-[#fbc4c4] text-[#9b1c1c]",
-    badge: "bg-[#d91e36]",
+    badge: "bg-danger",
     glyph: "!",
   },
 };
@@ -53,7 +53,7 @@ export default function ToastContainer({ toasts, onCloseToast }) {
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto w-full p-5 rounded-[24px] border shadow-lg flex items-start gap-4 transition-all duration-300 transform translate-x-0 ${style.panel}`}
+            className={`pointer-events-auto w-full p-5 rounded-lg border shadow-lg flex items-start gap-4 transition-all duration-300 transform translate-x-0 ${style.panel}`}
           >
             {/* Icon */}
             <div className="flex-shrink-0 mt-0.5">
@@ -66,7 +66,7 @@ export default function ToastContainer({ toasts, onCloseToast }) {
 
             {/* Text Area */}
             <div className="flex-grow min-w-0">
-              <h4 className="font-bold text-[15px] leading-tight text-gray-900">{toast.title}</h4>
+              <h4 className="font-bold text-[15px] leading-tight text-foreground">{toast.title}</h4>
 
               {state === "partial" ? (
                 <p className="text-xs font-semibold text-[#b45309] mt-1">
@@ -74,27 +74,27 @@ export default function ToastContainer({ toasts, onCloseToast }) {
                 </p>
               ) : (
                 (toast.subtitle || toast.message) && (
-                  <p className="text-xs font-semibold text-gray-500 mt-1">{toast.subtitle || toast.message}</p>
+                  <p className="text-xs font-semibold text-muted-foreground mt-1">{toast.subtitle || toast.message}</p>
                 )
               )}
 
               {/* One row per target the connector touched. */}
               {items.length > 0 && (
-                <div className="mt-3 space-y-1.5 border-t border-gray-100 pt-2.5">
+                <div className="mt-3 space-y-1.5 border-t border-border pt-2.5">
                   {items.map((item, idx) => (
                     <div key={idx}>
                       <div className="flex items-center justify-between text-xs font-medium">
-                        <span className="text-gray-700 truncate mr-2" title={item.label}>
+                        <span className="text-foreground/90 truncate mr-2" title={item.label}>
                           {item.label}
                         </span>
-                        <span className={item.ok ? "text-green-600 font-bold" : "text-red-600 font-bold"}>
+                        <span className={item.ok ? "text-success font-bold" : "text-danger font-bold"}>
                           {item.ok ? "Success" : "Failed"}
                         </span>
                       </div>
                       {/* The connector said why. Dropping it was why a failure
                           here told you nothing you could act on. */}
                       {!item.ok && item.error && (
-                        <p className="m-0 mt-0.5 text-[11px] text-red-700/80 break-words">{item.error}</p>
+                        <p className="m-0 mt-0.5 text-[11px] text-danger-foreground/80 break-words">{item.error}</p>
                       )}
                     </div>
                   ))}
@@ -105,7 +105,7 @@ export default function ToastContainer({ toasts, onCloseToast }) {
             {/* Close Button */}
             <button
               onClick={() => onCloseToast(toast.id)}
-              className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors mt-0.5"
+              className="flex-shrink-0 text-muted-foreground hover:text-muted-foreground transition-colors mt-0.5"
             >
               <X className="size-4" />
             </button>

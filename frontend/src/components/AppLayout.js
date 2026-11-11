@@ -1,32 +1,27 @@
 /**
  * @file AppLayout.js
- * @description The frame every signed-in screen sits in: the section rail on
- * the left, a header naming the current section, and the page itself.
- *
- * It also holds the gates that used to live in App.js — still verifying the
- * session, and not signed in — plus the role-aware pieces: which sections a
- * person has, where they land, and what happens if they ask for a screen that
- * isn't theirs.
- *
- * The rail and the landing page both come from SECTIONS, so a role's screens
- * are declared once.
+ * Frame for signed-in screens.
  */
 
 import React, { useMemo } from "react";
 import { Outlet, useLocation, Navigate } from "react-router-dom";
-import { RefreshCw, LogOut } from "lucide-react";
+import { RefreshCw, LogOut, Moon, Sun } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
+import { SidebarProvider } from "../context/SidebarContext";
 import LoginPage from "./LoginPage";
 import ResetPasswordModal from "./ResetPasswordModal";
+import CommandPalette from "./CommandPalette";
 import Sidebar, { sectionsFor } from "./Sidebar";
+import { Button } from "./ui/button";
 
 const TITLES = {
   "/overview": ["Overview", "What needs attention today"],
-  "/people": ["People", "Everyone in the lab, their role and status"],
-  "/teams": ["Teams", "Teams, their members and leads"],
-  "/audit": ["Audit log", "Who did what, when, and whether it worked"],
-  "/access": ["Access", "What you can get into, and who gave it to you"],
-  "/team": ["Team", "Your team, and who to ask"],
+  "/people": ["People", "Manage members, roles, and service access"],
+  "/teams": ["Teams", "Structure, leads, and membership"],
+  "/audit": ["Audit log", "A durable record of every access change"],
+  "/access": ["Access", "Services you can use, and who granted them"],
+  "/team": ["Team", "Your teammates and who to ask"],
 };
 
 function initials(name, email) {
@@ -38,99 +33,89 @@ function initials(name, email) {
 
 function TopBar({ title, subtitle }) {
   const { user, role, logout } = useAuth();
+  const { isDark, cycleTheme } = useTheme();
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 bg-white border-b border-slate-200">
-      <div>
-        <h1 className="m-0 text-xl font-bold text-slate-900">{title}</h1>
-        <p className="mt-0.5 text-[13px] text-slate-600">{subtitle}</p>
+    <header className="relative z-10 flex flex-wrap items-center justify-between gap-3 px-6 md:px-8 min-h-[76px] py-3 border-b border-border/80 bg-card/75 backdrop-blur-xl">
+      <div className="min-w-0">
+        <h1 className="m-0 text-[28px] font-semibold text-foreground">{title}</h1>
+        <p className="mt-1 mb-0 text-[13px] text-muted-foreground tracking-[-0.01em] font-sans">{subtitle}</p>
       </div>
 
-      <div className="flex items-center gap-2.5">
-        <div className="flex items-center gap-2.5 min-h-[44px] pl-1 pr-3 py-1 border border-slate-200 rounded-full">
-          <span className="w-[34px] h-[34px] rounded-full bg-blue-900 text-white flex items-center justify-center text-xs font-semibold">
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={cycleTheme}
+          aria-label="Toggle theme"
+        >
+          {isDark ? <Sun /> : <Moon />}
+        </Button>
+
+        <div className="flex items-center gap-2.5 min-h-[42px] pl-1.5 pr-3 py-1 rounded-full border border-border/80 bg-card/90 shadow-soft backdrop-blur">
+          <span className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[11px] font-semibold shadow-soft">
             {initials(user?.name, user?.email)}
           </span>
-          <span className="flex flex-col items-start leading-tight">
-            <span className="text-[13px] font-semibold text-slate-900">{user?.name || user?.email}</span>
-            <span className="text-[11px] text-slate-600">{role}</span>
+          <span className="flex flex-col items-start leading-tight min-w-0 pr-1">
+            <span className="text-[13px] font-semibold tracking-tight text-foreground truncate max-w-[150px]">
+              {user?.name || user?.email}
+            </span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-[0.1em]">{role}</span>
           </span>
         </div>
-        <button
+
+        <Button
           type="button"
-          onClick={logout}
-          title="Log out of Cerberus"
-          aria-label="Log out"
-          className="w-11 h-11 flex items-center justify-center border border-slate-200 rounded-[10px] text-slate-600 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all cursor-pointer"
+          variant="outline"
+          size="sm"
+          className="hidden md:inline-flex text-muted-foreground"
+          onClick={() => window.dispatchEvent(new Event("cerberus:command"))}
+          title="Jump anywhere"
         >
-          <LogOut className="w-[18px] h-[18px]" />
-        </button>
+          <span className="text-[12px]">Search</span>
+          <kbd className="ml-1 h-5 min-w-[1.4rem] inline-flex items-center justify-center rounded border border-border bg-muted px-1 text-[10px] font-semibold">
+            ⌘K
+          </kbd>
+        </Button>
+
+        <Button type="button" variant="outline" size="icon" onClick={logout} aria-label="Log out" title="Log out">
+          <LogOut />
+        </Button>
       </div>
     </header>
   );
 }
 
-/**
- * Sends someone to the first section their role has. Used for "/" and for any
- * address that matches nothing, so a stale link lands somewhere real.
- */
 export function Landing() {
   const { role } = useAuth();
   const [first] = sectionsFor(role);
   return first ? <Navigate to={first.to} replace /> : null;
 }
 
-/**
- * Wraps the admin-only screens. A lead or student who reaches one — a
- * bookmark, or the back button after signing in as someone else — is sent to
- * their own landing page instead of being shown a console they can't use.
- *
- * This is for their benefit, not for safety: every endpoint behind those
- * screens checks the role server-side, so the worst a bypass here would show
- * is an empty page full of failed requests.
- */
 export function RequireAdmin() {
   const { role } = useAuth();
   return role === "ADMIN" ? <Outlet /> : <Landing />;
 }
 
-export default function AppLayout() {
-  const { role, isAuthenticated, requiresPasswordChange, isLoading } = useAuth();
+function ConsoleFrame() {
+  const { role, requiresPasswordChange } = useAuth();
   const { pathname } = useLocation();
   const sections = useMemo(() => sectionsFor(role), [role]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-8 h-8 text-blue-600 animate-spin" />
-          <p className="text-sm font-medium text-slate-600">Verifying session...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) return <LoginPage />;
-
-  const [title, subtitle] = TITLES[`/${pathname.split("/")[1]}`] || TITLES[sections[0]?.to] || ["Cerberus", ""];
+  const [title, subtitle] =
+    TITLES[`/${pathname.split("/")[1]}`] || TITLES[sections[0]?.to] || ["Cerberus", ""];
 
   return (
-    // overflow-hidden matters: a wrapped flex line is sized by its content, so
-    // without it the whole console scrolls instead of the pane inside it.
-    <div className="h-screen overflow-hidden flex flex-wrap bg-slate-100 text-slate-900">
+    <div className="ui-shell flex-nowrap">
       {sections.length > 0 && <Sidebar sections={sections} />}
-      <div className="flex-1 h-full min-w-0 min-h-0 flex flex-col basis-[560px] grow-[999]">
+      <div className="ui-main relative z-10 flex-1 h-full min-w-0 min-h-0 flex flex-col">
         <TopBar title={title} subtitle={subtitle} />
-        {/* A role with no sections at all. Nothing reaches this today, but it
-            is what the old "not an admin" screen was, and that screen had no
-            way off it: no rail, no header, so no log out button either, and
-            reloading landed straight back on it. Keeping the frame means
-            whoever lands here can always leave. */}
         {sections.length === 0 ? (
-          <main className="flex-1 min-h-0 overflow-y-auto scroll-soft px-6 py-4">
-            <div className="bg-white border border-slate-200 rounded-xl px-6 py-12 text-center">
-              <h2 className="m-0 text-lg font-semibold text-slate-900">Your portal is not available yet</h2>
-              <p className="mt-2 mb-0 text-slate-600">
+          <main className="flex-1 min-h-0 overflow-y-auto scroll-soft px-6 md:px-8 py-7">
+            <div className="ui-panel px-6 py-12 text-center">
+              <h2 className="ui-section-title">Your portal is not available yet</h2>
+              <p className="mt-2 mb-0 ui-meta">
                 Nothing is set up for your role yet. Contact the admin, or log out using the button above.
               </p>
             </div>
@@ -139,7 +124,31 @@ export default function AppLayout() {
           <Outlet />
         )}
       </div>
+      <CommandPalette />
       {requiresPasswordChange && <ResetPasswordModal />}
     </div>
+  );
+}
+
+export default function AppLayout() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <RefreshCw className="w-5 h-5 text-muted-foreground animate-spin" />
+          <p className="ui-meta">Verifying session…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) return <LoginPage />;
+
+  return (
+    <SidebarProvider>
+      <ConsoleFrame />
+    </SidebarProvider>
   );
 }

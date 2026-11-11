@@ -27,15 +27,15 @@ export default function PasswordRules({ rules, id }) {
       {rules.map((rule) => (
         <li
           key={rule.id}
-          className={`flex items-center gap-2 text-[13px] ${rule.ok ? "text-emerald-700" : "text-slate-500"}`}
+          className={`flex items-center gap-2 text-[13px] ${rule.ok ? "text-success-foreground" : "text-muted-foreground"}`}
         >
           <span
             aria-hidden="true"
             className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
-              rule.ok ? "bg-emerald-100" : "bg-slate-200"
+              rule.ok ? "bg-emerald-100" : "bg-muted"
             }`}
           >
-            {rule.ok ? <Check className="w-3 h-3" strokeWidth={3} /> : <span className="w-1 h-1 rounded-full bg-slate-500" />}
+            {rule.ok ? <Check className="w-3 h-3" strokeWidth={3} /> : <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />}
           </span>
           {rule.label}
           {/* The icon is decorative, so the state is said in words for a screen

@@ -49,8 +49,8 @@ function Avatar({ id, name, size = 36 }) {
 
 function LeadBadge() {
   return (
-    <span className="inline-flex items-center gap-1 px-2.5 py-[3px] rounded-full bg-blue-100 text-blue-800 text-[11px] font-bold tracking-wide">
-      <Star className="w-3 h-3 fill-amber-400 text-amber-700" />
+    <span className="inline-flex items-center gap-1 px-2.5 py-[3px] rounded-full bg-info-soft text-info-foreground text-[11px] font-bold tracking-wide">
+      <Star className="w-3 h-3 fill-amber-400 text-warning-foreground" />
       LEAD
     </span>
   );
@@ -232,14 +232,14 @@ export default function TeamsPage() {
       {toolbarNode &&
         createPortal(
           <>
-            <span className="text-[13px] text-slate-600">
+            <span className="text-[13px] text-muted-foreground">
               {totalActive} {totalActive === 1 ? "team" : "teams"}
               {totalArchived > 0 && ` · ${totalArchived} archived`}
             </span>
             <button
               type="button"
               onClick={() => { setDraft({ name: "", description: "" }); setDialog({ kind: "new" }); }}
-              className="flex items-center gap-1.5 min-h-[36px] px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-semibold cursor-pointer"
+              className="flex items-center gap-1.5 min-h-[36px] px-3 rounded-lg bg-primary hover:opacity-90 text-white text-[13px] font-semibold cursor-pointer"
             >
               <Plus className="w-4 h-4" /> New team
             </button>
@@ -261,24 +261,24 @@ export default function TeamsPage() {
           // the chrome above it. The old max-h subtracted a fixed 7.5rem, which
           // stopped being right the day the List / Map tabs were added above
           // this page — the panel ran past the fold and its footer went with it.
-          className="flex-1 basis-[280px] min-w-0 sticky top-0 lg:static max-h-[calc(100vh-11rem)] lg:max-h-none lg:h-full bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 overflow-hidden"
+          className="flex-1 basis-[280px] min-w-0 sticky top-0 lg:static max-h-[calc(100vh-11rem)] lg:max-h-none lg:h-full bg-card border border-border rounded-xl p-4 flex flex-col gap-3 overflow-hidden"
         >
           {/* No heading here: the TopBar and the toolbar row above both already
               say Teams, and the panel is more useful with the height back. */}
           <label className="relative block">
             <span className="sr-only">Search teams</span>
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-3" />
             <input
               type="search"
               placeholder="Search teams"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full min-h-[40px] pl-9 pr-3 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full min-h-[40px] pl-9 pr-3 bg-background border border-border rounded-lg text-sm focus:bg-card focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </label>
 
           {isLoading ? (
-            <p className="py-6 text-center text-sm text-slate-500">Loading teams…</p>
+            <p className="py-6 text-center text-sm text-muted-foreground">Loading teams…</p>
           ) : (
             <div className="flex-1 min-h-0 overflow-y-auto scroll-soft -mr-1 pr-1">
               <div className="flex flex-col gap-0.5">
@@ -291,17 +291,17 @@ export default function TeamsPage() {
                       onClick={() => navigate(`/teams/${t.team_id}`)}
                       aria-current={selected}
                       className={`flex items-center justify-between gap-2 w-full min-h-[44px] px-2.5 rounded-lg text-left cursor-pointer ${
-                        selected ? "bg-blue-50 border border-blue-200" : "border border-transparent hover:bg-slate-50"
+                        selected ? "bg-info-soft border border-info/25" : "border border-transparent hover:bg-background"
                       }`}
                     >
                       <span className="font-semibold truncate">{t.name}</span>
                       <span className="flex items-center gap-2 flex-shrink-0">
                         {t.member_count > 0 && !t.leads?.length && (
-                          <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-semibold">
+                          <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning-soft text-warning-foreground text-[11px] font-semibold">
                             <TriangleAlert className="w-3 h-3" /> No lead
                           </span>
                         )}
-                        <span className="text-xs text-slate-600">
+                        <span className="text-xs text-muted-foreground">
                           {t.member_count} {t.member_count === 1 ? "member" : "members"}
                         </span>
                       </span>
@@ -309,7 +309,7 @@ export default function TeamsPage() {
                   );
                 })}
                 {!activeTeams.length && (
-                  <p className="my-2 mx-1 text-[13px] text-slate-600">
+                  <p className="my-2 mx-1 text-[13px] text-muted-foreground">
                     {query ? `No team matches “${query}”.` : "No teams yet."}
                   </p>
                 )}
@@ -319,12 +319,12 @@ export default function TeamsPage() {
           )}
 
           {archivedTeams.length > 0 && (
-            <div className="flex-shrink-0 border-t border-slate-200 pt-2">
+            <div className="flex-shrink-0 border-t border-border pt-2">
               <button
                 type="button"
                 onClick={() => setShowArchived((v) => !v)}
                 aria-expanded={showArchived}
-                className="flex items-center gap-1.5 w-full min-h-[36px] px-1.5 rounded-lg text-left text-[11px] font-semibold uppercase tracking-wider text-slate-600 hover:bg-slate-50 cursor-pointer"
+                className="flex items-center gap-1.5 w-full min-h-[36px] px-1.5 rounded-lg text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground hover:bg-background cursor-pointer"
               >
                 <ChevronRight className={`w-3.5 h-3.5 transition-transform ${showArchived ? "rotate-90" : ""}`} />
                 Archived
@@ -342,11 +342,11 @@ export default function TeamsPage() {
                         onClick={() => navigate(`/teams/${t.team_id}`)}
                         aria-current={selected}
                         className={`flex items-center justify-between gap-2 w-full min-h-[44px] px-2.5 rounded-lg text-left cursor-pointer ${
-                          selected ? "bg-blue-50 border border-blue-200" : "border border-transparent hover:bg-slate-50"
+                          selected ? "bg-info-soft border border-info/25" : "border border-transparent hover:bg-background"
                         }`}
                       >
-                        <span className="text-slate-600 truncate">{t.name}</span>
-                        <span className="text-xs text-slate-600 flex-shrink-0">Archived</span>
+                        <span className="text-muted-foreground truncate">{t.name}</span>
+                        <span className="text-xs text-muted-foreground flex-shrink-0">Archived</span>
                       </button>
                     );
                   })}
@@ -370,12 +370,12 @@ export default function TeamsPage() {
           className="flex-[999] basis-[520px] min-w-0 flex flex-col gap-4 lg:h-full lg:overflow-y-auto lg:scroll-soft lg:pr-1"
         >
           {!team ? (
-            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-600">
+            <div className="bg-card border border-border rounded-xl p-12 text-center text-muted-foreground">
               {isTeamLoading ? "Loading team…" : "Select a team."}
             </div>
           ) : (
             <>
-              <div className="bg-white border border-slate-200 rounded-xl p-5">
+              <div className="bg-card border border-border rounded-xl p-5">
                 {editing ? (
                   <form
                     className="flex flex-col gap-3"
@@ -394,7 +394,7 @@ export default function TeamsPage() {
                         type="text"
                         value={draft.name}
                         onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
-                        className="min-h-[40px] px-3 border border-slate-300 rounded-lg font-normal text-sm"
+                        className="min-h-[40px] px-3 border border-border rounded-lg font-normal text-sm"
                       />
                     </label>
                     <label className="flex flex-col gap-1 text-[13px] font-semibold">
@@ -403,14 +403,14 @@ export default function TeamsPage() {
                         rows={2}
                         value={draft.description}
                         onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
-                        className="px-3 py-2 border border-slate-300 rounded-lg font-normal text-sm resize-y"
+                        className="px-3 py-2 border border-border rounded-lg font-normal text-sm resize-y"
                       />
                     </label>
                     <div className="flex justify-end gap-2">
-                      <button type="button" onClick={() => setEditing(false)} className="min-h-[40px] px-3.5 border border-slate-300 rounded-lg bg-white cursor-pointer">
+                      <button type="button" onClick={() => setEditing(false)} className="min-h-[40px] px-3.5 border border-border rounded-lg bg-card cursor-pointer">
                         Cancel
                       </button>
-                      <button type="submit" disabled={busy} className="min-h-[40px] px-4 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold cursor-pointer">
+                      <button type="submit" disabled={busy} className="min-h-[40px] px-4 rounded-lg bg-primary hover:opacity-90 disabled:opacity-50 text-white font-semibold cursor-pointer">
                         Save
                       </button>
                     </div>
@@ -421,26 +421,26 @@ export default function TeamsPage() {
                       <div className="flex items-center gap-2.5 flex-wrap">
                         <h2 className="m-0 text-[22px] font-bold">{team.name}</h2>
                         {!isActive && (
-                          <span className="px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-xs font-semibold">
+                          <span className="px-2.5 py-0.5 rounded-full bg-muted text-foreground/90 text-xs font-semibold">
                             Archived · read only
                           </span>
                         )}
                       </div>
-                      <p className="mt-1.5 mb-0 text-slate-700">{team.description || "No description."}</p>
+                      <p className="mt-1.5 mb-0 text-foreground/90">{team.description || "No description."}</p>
                     </div>
                     {isActive && (
                       <div className="flex gap-2">
                         <button
                           type="button"
                           onClick={() => { setDraft({ name: team.name, description: team.description || "" }); setEditing(true); }}
-                          className="min-h-[40px] px-3.5 border border-slate-300 rounded-lg bg-white font-medium cursor-pointer"
+                          className="min-h-[40px] px-3.5 border border-border rounded-lg bg-card font-medium cursor-pointer"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => setDialog({ kind: "archive" })}
-                          className="min-h-[40px] px-3.5 border border-slate-300 rounded-lg bg-white font-medium text-red-700 cursor-pointer"
+                          className="min-h-[40px] px-3.5 border border-border rounded-lg bg-card font-medium text-danger-foreground cursor-pointer"
                         >
                           Archive
                         </button>
@@ -450,20 +450,20 @@ export default function TeamsPage() {
                 )}
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col gap-3">
+              <div className="bg-card border border-border rounded-xl p-5 flex flex-col gap-3">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="m-0 text-[15px] font-semibold">
-                    Members <span className="text-slate-600 font-medium">({members.length})</span>
+                    Members <span className="text-muted-foreground font-medium">({members.length})</span>
                   </h3>
                   <div className="flex items-center gap-2">
-                    <button type="button" onClick={refresh} title="Refresh" aria-label="Refresh" className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 cursor-pointer">
+                    <button type="button" onClick={refresh} title="Refresh" aria-label="Refresh" className="w-9 h-9 flex items-center justify-center rounded-lg text-muted-foreground hover:bg-background cursor-pointer">
                       <RefreshCw className={`w-4 h-4 ${isTeamLoading ? "animate-spin" : ""}`} />
                     </button>
                     {isActive && (
                       <button
                         type="button"
                         onClick={openAddMember}
-                        className="flex items-center gap-1.5 min-h-[36px] px-3 border border-blue-200 rounded-lg bg-blue-50 text-blue-700 text-[13px] font-semibold cursor-pointer"
+                        className="flex items-center gap-1.5 min-h-[36px] px-3 border border-info/25 rounded-lg bg-info-soft text-info text-[13px] font-semibold cursor-pointer"
                       >
                         <Plus className="w-4 h-4" /> Add member
                       </button>
@@ -472,7 +472,7 @@ export default function TeamsPage() {
                 </div>
 
                 {!members.length && (
-                  <p className="m-0 py-5 text-center text-slate-600 bg-slate-50 rounded-lg">No members.</p>
+                  <p className="m-0 py-5 text-center text-muted-foreground bg-background rounded-lg">No members.</p>
                 )}
 
                 <div role="list" className="flex flex-col">
@@ -480,11 +480,11 @@ export default function TeamsPage() {
                     const name = fullName(m);
                     const open = menuFor === m.user_id;
                     return (
-                      <div key={m.user_id} role="listitem" className="relative flex flex-wrap items-center gap-3 px-1 py-2.5 border-t border-slate-100">
+                      <div key={m.user_id} role="listitem" className="relative flex flex-wrap items-center gap-3 px-1 py-2.5 border-t border-border">
                         <Avatar id={m.user_id} name={name} />
                         <div className="flex-1 basis-[200px] min-w-0">
                           <div className="font-semibold truncate">{name}</div>
-                          <div className="text-xs text-slate-600 truncate">{m.email}</div>
+                          <div className="text-xs text-muted-foreground truncate">{m.email}</div>
                         </div>
                         <span className="min-w-[56px]">{m.is_lead && <LeadBadge />}</span>
                         {isActive && (
@@ -493,7 +493,7 @@ export default function TeamsPage() {
                             aria-label={`Actions for ${name}`}
                             aria-expanded={open}
                             onClick={(e) => { e.stopPropagation(); setMenuFor(open ? null : m.user_id); }}
-                            className="w-10 h-10 flex items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 cursor-pointer"
+                            className="w-10 h-10 flex items-center justify-center rounded-lg text-foreground/90 hover:bg-background cursor-pointer"
                           >
                             <MoreHorizontal className="w-[18px] h-[18px]" />
                           </button>
@@ -502,14 +502,14 @@ export default function TeamsPage() {
                           <div
                             role="menu"
                             onKeyDown={(e) => { if (e.key === "Escape") setMenuFor(null); }}
-                            className="absolute right-1 top-[52px] z-10 min-w-[200px] bg-white border border-slate-200 rounded-[10px] shadow-lg p-1.5 flex flex-col"
+                            className="absolute right-1 top-[52px] z-10 min-w-[200px] bg-card border border-border rounded-[10px] shadow-lg p-1.5 flex flex-col"
                           >
                             {m.is_lead ? (
                               <button
                                 type="button"
                                 role="menuitem"
                                 onClick={() => run(() => teamsApi.setLead(team.team_id, m.user_id, false), `${name} is no longer a lead of ${team.name}.`)}
-                                className="text-left min-h-[40px] px-3 rounded-md hover:bg-slate-100 cursor-pointer"
+                                className="text-left min-h-[40px] px-3 rounded-md hover:bg-background cursor-pointer"
                               >
                                 Remove lead
                               </button>
@@ -518,7 +518,7 @@ export default function TeamsPage() {
                                 type="button"
                                 role="menuitem"
                                 onClick={() => setDialog({ kind: "makeLead", userId: m.user_id, name })}
-                                className="text-left min-h-[40px] px-3 rounded-md hover:bg-slate-100 cursor-pointer"
+                                className="text-left min-h-[40px] px-3 rounded-md hover:bg-background cursor-pointer"
                               >
                                 Make lead
                               </button>
@@ -527,7 +527,7 @@ export default function TeamsPage() {
                               type="button"
                               role="menuitem"
                               onClick={() => setDialog({ kind: "remove", userId: m.user_id, name, isLead: m.is_lead })}
-                              className="text-left min-h-[40px] px-3 rounded-md text-red-700 hover:bg-red-50 cursor-pointer"
+                              className="text-left min-h-[40px] px-3 rounded-md text-danger-foreground hover:bg-danger-soft cursor-pointer"
                             >
                               Remove from team
                             </button>
@@ -539,8 +539,8 @@ export default function TeamsPage() {
                 </div>
               </div>
 
-              <div className="border border-dashed border-slate-300 rounded-xl px-5 py-4 text-slate-600">
-                <h3 className="m-0 text-sm font-semibold text-slate-700">Access pool</h3>
+              <div className="border border-dashed border-border rounded-xl px-5 py-4 text-muted-foreground">
+                <h3 className="m-0 text-sm font-semibold text-foreground/90">Access pool</h3>
                 <p className="mt-1 mb-0 text-[13px]">
                   Comes later: the services this team can hand out, and the highest access level a lead may grant.
                 </p>
@@ -602,7 +602,7 @@ function Dialog({ dialog, team, candidates, personQuery, setPersonQuery, draft, 
                 placeholder="e.g. Game Studio"
                 value={draft.name}
                 onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
-                className="min-h-[40px] px-3 border border-slate-300 rounded-lg font-normal text-sm"
+                className="min-h-[40px] px-3 border border-border rounded-lg font-normal text-sm"
               />
             </label>
             <label className="flex flex-col gap-1 text-[13px] font-semibold">
@@ -611,12 +611,12 @@ function Dialog({ dialog, team, candidates, personQuery, setPersonQuery, draft, 
                 rows={2}
                 value={draft.description}
                 onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
-                className="px-3 py-2 border border-slate-300 rounded-lg font-normal text-sm resize-y"
+                className="px-3 py-2 border border-border rounded-lg font-normal text-sm resize-y"
               />
             </label>
             <div className="flex justify-end gap-2 pt-1">
-              <button type="button" onClick={close} className="min-h-[40px] px-3.5 border border-slate-300 rounded-lg bg-white cursor-pointer">Cancel</button>
-              <button type="submit" disabled={busy} className="min-h-[40px] px-4 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold cursor-pointer">
+              <button type="button" onClick={close} className="min-h-[40px] px-3.5 border border-border rounded-lg bg-card cursor-pointer">Cancel</button>
+              <button type="submit" disabled={busy} className="min-h-[40px] px-4 rounded-lg bg-primary hover:opacity-90 disabled:opacity-50 text-white font-semibold cursor-pointer">
                 Create team
               </button>
             </div>
@@ -629,31 +629,31 @@ function Dialog({ dialog, team, candidates, personQuery, setPersonQuery, draft, 
             <h2 className="m-0 text-lg font-bold">Add member to {team?.name}</h2>
             <label className="relative block">
               <span className="sr-only">Search users by name</span>
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-3" />
               <input
                 type="search"
                 autoFocus
                 placeholder="Search by name"
                 value={personQuery}
                 onChange={(e) => setPersonQuery(e.target.value)}
-                className="w-full min-h-[40px] pl-9 pr-3 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full min-h-[40px] pl-9 pr-3 bg-background border border-border rounded-lg text-sm focus:bg-card focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </label>
-            <div className="flex flex-col max-h-[300px] overflow-y-auto scroll-soft border border-slate-200 rounded-[10px]">
+            <div className="flex flex-col max-h-[300px] overflow-y-auto scroll-soft border border-border rounded-[10px]">
               {candidates.map((p) => {
                 const name = fullName(p);
                 return (
-                  <div key={p.user_id} className="flex items-center gap-2.5 px-2.5 py-2 border-b border-slate-100 last:border-b-0">
+                  <div key={p.user_id} className="flex items-center gap-2.5 px-2.5 py-2 border-b border-border last:border-b-0">
                     <Avatar id={p.user_id} name={name} size={32} />
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold truncate">{name}</div>
-                      <div className="text-xs text-slate-600 truncate">{p.teamNames || "No team"}</div>
+                      <div className="text-xs text-muted-foreground truncate">{p.teamNames || "No team"}</div>
                     </div>
                     <button
                       type="button"
                       disabled={busy}
                       onClick={() => onRun(() => teamsApi.addMember(team.team_id, p.user_id), `${name} added to ${team.name}.`)}
-                      className="min-h-[36px] px-3 border border-blue-200 rounded-lg bg-blue-50 text-blue-700 font-semibold disabled:opacity-50 cursor-pointer"
+                      className="min-h-[36px] px-3 border border-info/25 rounded-lg bg-info-soft text-info font-semibold disabled:opacity-50 cursor-pointer"
                     >
                       Add
                     </button>
@@ -661,16 +661,16 @@ function Dialog({ dialog, team, candidates, personQuery, setPersonQuery, draft, 
                 );
               })}
               {!candidates.length && (
-                <p className="m-0 p-4 text-slate-600">
+                <p className="m-0 p-4 text-muted-foreground">
                   {personQuery ? `Nobody matches “${personQuery}”.` : "Everyone eligible is already in this team."}
                 </p>
               )}
             </div>
-            <p className="m-0 text-xs text-slate-500">
+            <p className="m-0 text-xs text-muted-foreground">
               They join as a member. Admins, inactive users and current members aren&apos;t listed.
             </p>
             <div className="flex justify-end">
-              <button type="button" onClick={close} className="min-h-[40px] px-3.5 border border-slate-300 rounded-lg bg-white cursor-pointer">Done</button>
+              <button type="button" onClick={close} className="min-h-[40px] px-3.5 border border-border rounded-lg bg-card cursor-pointer">Done</button>
             </div>
           </>
         );
@@ -734,7 +734,7 @@ function Dialog({ dialog, team, candidates, personQuery, setPersonQuery, draft, 
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/45 flex items-start justify-center px-4 pt-24 pb-4">
-      <div role="dialog" aria-modal="true" className="w-full max-w-[480px] bg-white rounded-2xl shadow-2xl p-5 flex flex-col gap-3.5">
+      <div role="dialog" aria-modal="true" className="w-full max-w-[480px] bg-card rounded-lg shadow-2xl p-5 flex flex-col gap-3.5">
         {body()}
       </div>
     </div>
@@ -745,15 +745,15 @@ function Confirm({ title, body, confirmLabel, tone, busy, onClose, onConfirm }) 
   return (
     <>
       <h2 className="m-0 text-lg font-bold">{title}</h2>
-      <p className="m-0 text-slate-700 leading-relaxed">{body}</p>
+      <p className="m-0 text-foreground/90 leading-relaxed">{body}</p>
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onClose} className="min-h-[40px] px-3.5 border border-slate-300 rounded-lg bg-white cursor-pointer">Cancel</button>
+        <button type="button" onClick={onClose} className="min-h-[40px] px-3.5 border border-border rounded-lg bg-card cursor-pointer">Cancel</button>
         <button
           type="button"
           disabled={busy}
           onClick={onConfirm}
           className={`min-h-[40px] px-4 rounded-lg text-white font-semibold disabled:opacity-50 cursor-pointer ${
-            tone === "red" ? "bg-red-700 hover:bg-red-800" : "bg-blue-600 hover:bg-blue-700"
+            tone === "red" ? "bg-red-700 hover:bg-red-800" : "bg-primary hover:opacity-90"
           }`}
         >
           {confirmLabel}

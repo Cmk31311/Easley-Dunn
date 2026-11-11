@@ -207,7 +207,7 @@ export default function AuditTable({
   return (
     <>
       {(categories || exportable) && (
-        <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
+        <div className="flex flex-wrap items-center gap-1.5 mb-3">
           {categories &&
             CATEGORIES.map((c) => (
               <button
@@ -216,8 +216,10 @@ export default function AuditTable({
                 role="tab"
                 aria-selected={category === c.id}
                 onClick={() => setCategory(c.id)}
-                className={`h-8 px-2.5 rounded-md text-[13px] font-medium cursor-pointer ${
-                  category === c.id ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-200/70"
+                className={`h-8 px-2.5 rounded-full text-[12px] font-semibold cursor-pointer border transition-colors ${
+                  category === c.id
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-muted-foreground border-border hover:text-foreground hover:bg-muted"
                 }`}
               >
                 {c.label}
@@ -228,7 +230,7 @@ export default function AuditTable({
               type="button"
               onClick={exportCsv}
               disabled={!events.length}
-              className="ml-auto flex items-center gap-1.5 h-8 px-2.5 border border-slate-300 rounded-md bg-white text-[13px] font-medium disabled:opacity-50 cursor-pointer hover:bg-slate-50"
+              className="ml-auto flex items-center gap-1.5 h-8 px-2.5 border border-border rounded-xl bg-card text-[12px] font-semibold disabled:opacity-50 cursor-pointer hover:bg-muted"
             >
               <Download className="w-3.5 h-3.5" /> Export CSV
             </button>
@@ -236,109 +238,116 @@ export default function AuditTable({
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="ui-panel overflow-hidden">
         <table className="w-full text-left text-[13px]">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200 text-[11px] uppercase font-semibold tracking-wide text-slate-500">
-              <th className="py-2 px-3 w-8" />
-              <th className="py-2 px-2">Time</th>
-              <th className="py-2 px-3">Actor</th>
-              <th className="py-2 px-3">Activity</th>
-              <th className="py-2 px-3">Target</th>
-              <th className="py-2 px-3">Result</th>
+            <tr className="bg-muted/50 border-b border-border text-[11px] uppercase font-semibold tracking-wide text-muted-foreground">
+              <th className="py-2.5 px-3 w-8" />
+              <th className="py-2.5 px-2">Time</th>
+              <th className="py-2.5 px-3">Actor</th>
+              <th className="py-2.5 px-3">Activity</th>
+              <th className="py-2.5 px-3">Target</th>
+              <th className="py-2.5 px-3">Result</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border">
             {isLoading ? (
-              <tr><td colSpan="6" className="py-10 text-center text-slate-500">Loading the log…</td></tr>
+              <tr><td colSpan="6" className="py-10 text-center text-muted-foreground">Loading the log…</td></tr>
             ) : events.length === 0 ? (
-              <tr><td colSpan="6" className="py-10 text-center text-slate-500">{emptyText}</td></tr>
+              <tr><td colSpan="6" className="py-10 text-center text-muted-foreground">{emptyText}</td></tr>
             ) : (
               events.map((e) => {
                 const isOpen = open === e.eventId;
                 const failed = e.outcome !== "SUCCESS";
                 return (
                   <React.Fragment key={e.eventId}>
-                    <tr className="hover:bg-slate-50/80">
+                    <tr
+                      className="hover:bg-muted/40 cursor-pointer transition-colors"
+                      onClick={() => setOpen(isOpen ? null : e.eventId)}
+                    >
                       <td className="py-2 px-3">
-                        <button
-                          type="button"
-                          onClick={() => setOpen(isOpen ? null : e.eventId)}
-                          aria-expanded={isOpen}
-                          aria-label={isOpen ? "Hide detail" : "Show detail"}
-                          className="w-6 h-6 flex items-center justify-center rounded text-slate-500 hover:bg-slate-200 cursor-pointer"
-                        >
-                          <ChevronRight className={`w-4 h-4 transition-transform ${isOpen ? "rotate-90" : ""}`} />
-                        </button>
+                        <span className="w-6 h-6 inline-flex items-center justify-center rounded text-muted-foreground">
+                          <ChevronRight className={`w-4 h-4 transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] ${isOpen ? "rotate-90" : ""}`} />
+                        </span>
                       </td>
-                      <td className="py-2 px-2 text-slate-500 whitespace-nowrap" title={new Date(e.createdAt).toLocaleString()}>
+                      <td className="py-2 px-2 text-muted-foreground whitespace-nowrap tabular-nums" title={new Date(e.createdAt).toLocaleString()}>
                         {when(e.createdAt)}
                       </td>
                       <td className="py-2 px-3">
                         {e.actor ? (
-                          <Link to={`/people/${e.actor.userId}`} className="text-slate-900 no-underline hover:underline">
+                          <Link
+                            to={`/people/${e.actor.userId}`}
+                            onClick={(ev) => ev.stopPropagation()}
+                            className="text-foreground no-underline hover:underline"
+                          >
                             {e.actor.name}
                           </Link>
                         ) : (
-                          <span className="text-slate-500">{e.detail?.performedBy || "System"}</span>
+                          <span className="text-muted-foreground">{e.detail?.performedBy || "System"}</span>
                         )}
                       </td>
-                      <td className="py-2 px-3 font-medium text-slate-900">{activityFor(e.action)}</td>
+                      <td className="py-2 px-3 font-medium text-foreground">{activityFor(e.action)}</td>
                       <td className="py-2 px-3">
                         {targetsOf(e, showTarget).map((t) => (
                           <div key={`${t.kind}-${t.name}`} className="leading-snug">
                             {t.to ? (
-                              <Link to={t.to} className="text-slate-900 no-underline hover:underline">{t.name}</Link>
+                              <Link
+                                to={t.to}
+                                onClick={(ev) => ev.stopPropagation()}
+                                className="text-foreground no-underline hover:underline"
+                              >
+                                {t.name}
+                              </Link>
                             ) : (
-                              <span className="text-slate-900">{t.name}</span>
+                              <span className="text-foreground">{t.name}</span>
                             )}
-                            <span className="text-slate-500"> ({t.kind})</span>
+                            <span className="text-muted-foreground"> ({t.kind})</span>
                           </div>
                         ))}
-                        {!targetsOf(e, showTarget).length && <span className="text-slate-400">—</span>}
+                        {!targetsOf(e, showTarget).length && <span className="text-muted-foreground">—</span>}
                       </td>
                       <td className="py-2 px-3 whitespace-nowrap">
-                        <span className={`font-semibold ${failed ? "text-red-700" : "text-emerald-700"}`}>
+                        <span className={`font-semibold ${failed ? "text-danger-foreground" : "text-success-foreground"}`}>
                           {failed ? "Failed" : "Success"}
                         </span>
                         {failed && e.detail?.reason && (
-                          <span className="block text-xs text-slate-600 max-w-[280px] truncate" title={e.detail.reason}>
+                          <span className="block text-xs text-muted-foreground max-w-[280px] truncate" title={e.detail.reason}>
                             {e.detail.reason}
                           </span>
                         )}
                       </td>
                     </tr>
                     {isOpen && (
-                      <tr className="bg-slate-50/60">
+                      <tr className="bg-muted/30">
                         <td />
-                        <td colSpan="5" className="py-3 pr-4">
+                        <td colSpan="5" className="py-3.5 pr-4">
                           <dl className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[13px]">
                             <div>
-                              <dt className="text-[11px] uppercase tracking-wider text-slate-500">Timestamp</dt>
+                              <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Timestamp</dt>
                               <dd className="m-0">{new Date(e.createdAt).toLocaleString()}</dd>
                             </div>
                             <div>
-                              <dt className="text-[11px] uppercase tracking-wider text-slate-500">Event</dt>
+                              <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Event</dt>
                               <dd className="m-0 font-mono text-xs">{e.action}</dd>
                             </div>
                             <div>
-                              <dt className="text-[11px] uppercase tracking-wider text-slate-500">Actor</dt>
+                              <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Actor</dt>
                               <dd className="m-0">{e.actor?.name || e.detail?.performedBy || "System"}</dd>
                             </div>
                             <div>
-                              <dt className="text-[11px] uppercase tracking-wider text-slate-500">Affected user</dt>
+                              <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Affected user</dt>
                               <dd className="m-0">{e.target?.name || "—"}</dd>
                             </div>
                             <div>
-                              <dt className="text-[11px] uppercase tracking-wider text-slate-500">Team</dt>
+                              <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Team</dt>
                               <dd className="m-0">{e.team?.name || "—"}</dd>
                             </div>
                             <div>
-                              <dt className="text-[11px] uppercase tracking-wider text-slate-500">Service</dt>
+                              <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Service</dt>
                               <dd className="m-0">{e.service?.name || "—"}</dd>
                             </div>
                             <div>
-                              <dt className="text-[11px] uppercase tracking-wider text-slate-500">Event id</dt>
+                              <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Event id</dt>
                               <dd className="m-0 font-mono text-xs">{e.eventId}</dd>
                             </div>
                           </dl>
@@ -346,7 +355,7 @@ export default function AuditTable({
                             <dl className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-[13px]">
                               {detailRows(e.detail).map(([label, value]) => (
                                 <div key={label}>
-                                  <dt className="text-[11px] uppercase tracking-wider text-slate-500">{label}</dt>
+                                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</dt>
                                   <dd className="m-0 break-words">{value}</dd>
                                 </div>
                               ))}
@@ -363,12 +372,12 @@ export default function AuditTable({
         </table>
 
         {cursor && (
-          <div className="p-2.5 border-t border-slate-100 text-center">
+          <div className="p-2.5 border-t border-border text-center">
             <button
               type="button"
               disabled={isLoadingMore}
               onClick={() => { setIsLoadingMore(true); load(cursor); }}
-              className="inline-flex items-center gap-2 h-8 px-3 border border-slate-300 rounded-md bg-white text-[13px] font-medium disabled:opacity-50 cursor-pointer hover:bg-slate-50"
+              className="inline-flex items-center gap-2 h-8 px-3 border border-border rounded-md bg-card text-[13px] font-medium disabled:opacity-50 cursor-pointer hover:bg-background"
             >
               {isLoadingMore && <RefreshCw className="w-4 h-4 animate-spin" />}
               Load more
@@ -379,7 +388,7 @@ export default function AuditTable({
 
 
       {!isLoading && events.length > 0 && (
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-2 text-xs text-muted-foreground">
           Showing {events.length} {events.length === 1 ? "event" : "events"}
           {cursor ? " — load more for earlier ones." : ", the oldest in this period."}
         </p>

@@ -21,9 +21,9 @@ import * as userApi from "../api/user";
 
 /** The level on a grant, when the connector recorded one. */
 function Level({ roleName }) {
-  if (!roleName) return <span className="text-slate-400">—</span>;
+  if (!roleName) return <span className="text-muted-foreground">—</span>;
   return (
-    <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium">
+    <span className="inline-block px-2 py-0.5 rounded-md bg-background text-foreground/90 text-xs font-medium">
       {roleName}
     </span>
   );
@@ -31,9 +31,9 @@ function Level({ roleName }) {
 
 /** "by Prof. Easley, 3 Oct" — or a dash when the log predates the grant. */
 function Granted({ at, by }) {
-  if (!at && !by) return <span className="text-slate-400">—</span>;
+  if (!at && !by) return <span className="text-muted-foreground">—</span>;
   return (
-    <span className="text-slate-600" title={at ? new Date(at).toLocaleString() : ""}>
+    <span className="text-muted-foreground" title={at ? new Date(at).toLocaleString() : ""}>
       {by && `by ${by}`}
       {by && at && ", "}
       {at && new Date(at).toLocaleDateString()}
@@ -67,17 +67,17 @@ export default function AccessPage() {
   }, []);
 
   return (
-    <main className="flex-1 min-h-0 overflow-y-auto scroll-soft px-6 py-4">
+    <main className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-soft px-7 py-6">
       {error && (
-        <div className="mb-3 px-3 py-2.5 rounded-xl bg-red-50 border border-red-200 text-[13px] text-red-700">
+        <div className="mb-3 px-3.5 py-2.5 rounded-[12px] bg-danger-soft border border-danger/20 text-[13px] text-danger-foreground">
           {error}
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="ui-panel overflow-hidden">
         <table className="w-full text-left text-[13px]">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200 text-[11px] uppercase font-semibold tracking-wide text-slate-500">
+            <tr className="bg-background border-b border-border text-[11px] uppercase font-semibold tracking-wide text-muted-foreground">
               <th className="py-2 px-3">Service</th>
               <th className="py-2 px-3">Level</th>
               <th className="py-2 px-3">Granted</th>
@@ -87,7 +87,7 @@ export default function AccessPage() {
           <tbody className="divide-y divide-slate-100">
             {isLoading ? (
               <tr>
-                <td colSpan="4" className="py-10 text-center text-slate-500">
+                <td colSpan="4" className="py-10 text-center text-muted-foreground">
                   <RefreshCw className="w-4 h-4 animate-spin inline-block mr-2 align-text-bottom" />
                   Loading your access…
                 </td>
@@ -96,10 +96,10 @@ export default function AccessPage() {
               <tr>
                 <td colSpan="4" className="py-12 text-center">
                   <KeyRound className="w-7 h-7 text-slate-300 mx-auto mb-2" />
-                  <p className="m-0 font-semibold text-slate-900">You don't have access to anything yet</p>
-                  <p className="mt-1 mb-0 text-slate-600">
+                  <p className="m-0 font-semibold text-foreground">You don't have access to anything yet</p>
+                  <p className="mt-1 mb-0 text-muted-foreground">
                     Access is granted by the admin. Your{" "}
-                    <Link to="/team" className="text-blue-700 hover:underline">
+                    <Link to="/team" className="text-info hover:underline">
                       team
                     </Link>{" "}
                     page shows who to ask.
@@ -108,11 +108,11 @@ export default function AccessPage() {
               </tr>
             ) : (
               access.map((a) => (
-                <tr key={a.access_id} className="hover:bg-slate-50/80">
-                  <td className="py-2 px-3 font-medium text-slate-900">
+                <tr key={a.access_id} className="hover:bg-background/80">
+                  <td className="py-2 px-3 font-medium text-foreground">
                     {a.service?.service_name || "Unknown service"}
                     {a.service && !a.service.is_active && (
-                      <span className="ml-2 text-xs font-normal text-amber-700">service inactive</span>
+                      <span className="ml-2 text-xs font-normal text-warning-foreground">service inactive</span>
                     )}
                   </td>
                   <td className="py-2 px-3">
@@ -121,9 +121,9 @@ export default function AccessPage() {
                   <td className="py-2 px-3 whitespace-nowrap">
                     <Granted at={a.grantedAt} by={a.grantedBy} />
                   </td>
-                  <td className="py-2 px-3 text-slate-600 break-all">
+                  <td className="py-2 px-3 text-muted-foreground break-all">
                     {a.external_user_identifier || a.external_account_identifier || (
-                      <span className="text-slate-400">—</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </td>
                 </tr>
@@ -134,9 +134,9 @@ export default function AccessPage() {
       </div>
 
       {!isLoading && access.length > 0 && (
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-2 text-xs text-muted-foreground">
           {access.length} {access.length === 1 ? "service" : "services"}. Need something that isn't here? Your{" "}
-          <Link to="/team" className="text-blue-700 hover:underline">
+          <Link to="/team" className="text-info hover:underline">
             team
           </Link>{" "}
           page shows who to ask.

@@ -131,7 +131,7 @@ export default function ResizableSplit({ containerRef, width, setWidth, label })
     >
       <span
         className={`w-px h-full transition-colors ${
-          dragging ? "bg-blue-500" : "bg-transparent group-hover:bg-blue-400 group-focus:bg-blue-500"
+          dragging ? "bg-info/40" : "bg-transparent group-hover:bg-info/50 group-focus:bg-info/40"
         }`}
       />
     </div>

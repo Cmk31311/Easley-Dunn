@@ -2,41 +2,32 @@ import React, { memo } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { getServiceIcon } from "../utils/helpers";
 
-function ServiceRow({ id, name, serviceCode, isSelected, onToggle, type, pendingConfirmation }) {
-  const IconComponent = getServiceIcon(serviceCode, name);
-
+function ServiceRow({ name, serviceCode, isSelected, onToggle, type, pendingConfirmation }) {
+  const Icon = getServiceIcon(serviceCode, name);
   const selectedClasses =
-    type === "onboard"
-      ? "bg-[#f0fdf4] border-[#bbf7d0] text-slate-800"
-      : "bg-[#fdf2f2] border-[#fbc4c4] text-[#9b1c1c]";
-
-  const iconClasses =
-    type === "onboard"
-      ? "size-5 flex-shrink-0 text-gray-400"
-      : `size-5 flex-shrink-0 ${isSelected ? "text-[#d91e36]" : "text-gray-400"}`;
+    type === "offboard"
+      ? "bg-danger-soft border-danger/25 text-danger-foreground"
+      : "bg-info-soft border-info/25 text-info-foreground";
 
   return (
-    <div
-      onClick={() => onToggle(name)}
-      className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl border transition-all duration-150 cursor-pointer select-none ${
-        isSelected ? selectedClasses : "bg-white border-gray-200 text-gray-700 hover:border-gray-300"
+    <label
+      className={`flex items-center gap-3 px-3.5 py-2.5 rounded-md border transition-colors cursor-pointer select-none ${
+        isSelected ? selectedClasses : "bg-card border-border text-foreground/90 hover:border-primary/30 hover:bg-muted/40"
       }`}
     >
       <Checkbox
-        id={`${type}-checkbox-${id}`}
         checked={isSelected}
-        onClick={(e) => e.stopPropagation()}
         onCheckedChange={() => onToggle(name)}
-        className="size-5 rounded-[6px] border-gray-300 data-[state=checked]:bg-[#111827] data-[state=checked]:border-[#111827] data-[state=checked]:text-white transition-colors"
+        className="size-4 rounded-[4px] border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
       />
-      <IconComponent className={iconClasses} />
-      <span className="font-semibold text-[15px]">{name}</span>
+      <Icon className={`size-4 flex-shrink-0 ${isSelected ? "opacity-90" : "text-muted-foreground"}`} />
+      <span className="text-[13px] font-medium truncate">{name}</span>
       {pendingConfirmation && (
-        <span className="ml-auto flex-shrink-0 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
-          Pending confirmation
+        <span className="ml-auto flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-warning-soft text-warning-foreground border border-warning/20">
+          Pending
         </span>
       )}
-    </div>
+    </label>
   );
 }
 

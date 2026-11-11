@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import AppLayout, { Landing, RequireAdmin } from "./components/AppLayout";
 import TeamsSection from "./pages/TeamsSection";
 import TeamsPage from "./pages/TeamsPage";
@@ -18,6 +19,7 @@ const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || "100000000000
 export default function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
           <Routes>
@@ -52,6 +54,7 @@ export default function App() {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
+      </ThemeProvider>
     </GoogleOAuthProvider>
   );
 }

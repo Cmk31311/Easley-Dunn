@@ -156,7 +156,7 @@ export default function TeamsMapPage() {
   return (
     <main className="flex-1 min-h-0 px-6 py-4 flex flex-col">
       <div className="flex-shrink-0 mb-3 flex flex-wrap items-center justify-between gap-3">
-        <p className="m-0 text-slate-700">
+        <p className="m-0 text-foreground/90">
           <strong>{teams.length}</strong> active teams · <strong>{leadlessCount}</strong> without a lead
         </p>
       </div>
@@ -164,10 +164,10 @@ export default function TeamsMapPage() {
       {/* The map */}
       <div
         style={{ height: mapHeight }}
-        className="relative flex-shrink-0 min-h-0 overflow-hidden bg-white border border-slate-200 rounded-xl pt-6 pb-3 flex flex-col items-center"
+        className="relative flex-shrink-0 min-h-0 overflow-hidden bg-card border border-border rounded-xl pt-6 pb-3 flex flex-col items-center"
       >
-        <div role="group" aria-label="Zoom" className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1 p-1 bg-white border border-slate-200 rounded-[10px] shadow-sm">
-          <button type="button" onClick={() => clampZoom(zoom - 0.05)} aria-label="Zoom out" className="w-10 h-10 flex items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 cursor-pointer">
+        <div role="group" aria-label="Zoom" className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1 p-1 bg-card border border-border rounded-[10px] shadow-sm">
+          <button type="button" onClick={() => clampZoom(zoom - 0.05)} aria-label="Zoom out" className="w-10 h-10 flex items-center justify-center rounded-lg text-foreground/90 hover:bg-background cursor-pointer">
             <ZoomOut className="w-5 h-5" />
           </button>
           <input
@@ -178,24 +178,24 @@ export default function TeamsMapPage() {
             value={Math.round(zoom * 100)}
             onChange={(e) => clampZoom(Number(e.target.value) / 100)}
             aria-label="Zoom level"
-            className="w-40 cursor-pointer accent-blue-600"
+            className="w-40 cursor-pointer accent-primary"
           />
-          <button type="button" onClick={() => clampZoom(zoom + 0.05)} aria-label="Zoom in" className="w-10 h-10 flex items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 cursor-pointer">
+          <button type="button" onClick={() => clampZoom(zoom + 0.05)} aria-label="Zoom in" className="w-10 h-10 flex items-center justify-center rounded-lg text-foreground/90 hover:bg-background cursor-pointer">
             <ZoomIn className="w-5 h-5" />
           </button>
-          <button type="button" onClick={() => setZoom(1)} title="Back to actual size (100%)" className="min-w-[58px] h-10 px-2 border-l border-slate-200 rounded-r-lg text-right text-[13px] font-semibold text-slate-700 cursor-pointer">
+          <button type="button" onClick={() => setZoom(1)} title="Back to actual size (100%)" className="min-w-[58px] h-10 px-2 border-l border-border rounded-r-lg text-right text-[13px] font-semibold text-foreground/90 cursor-pointer">
             {Math.round(zoom * 100)}%
           </button>
         </div>
 
-        <div className="flex items-center gap-3 px-[18px] py-3 border border-violet-300 bg-violet-50 rounded-xl">
-          <span aria-hidden="true" className="w-11 h-11 rounded-full bg-violet-800 text-white flex items-center justify-center font-bold">
+        <div className="flex items-center gap-3 px-[18px] py-3 border border-border bg-muted rounded-xl">
+          <span aria-hidden="true" className="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center font-bold">
             {initials(user?.name || user?.email)}
           </span>
           <div>
             <div className="font-bold text-[15px]">{user?.name || user?.email}</div>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="px-2 py-0.5 rounded-full bg-violet-100 text-violet-800 text-[11px] font-bold tracking-wide">ADMIN</span>
+              <span className="px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground text-[11px] font-bold tracking-wide">ADMIN</span>
             </div>
           </div>
         </div>
@@ -204,16 +204,16 @@ export default function TeamsMapPage() {
         <div className="relative w-full flex-1 min-h-0 flex flex-col">
           <div aria-hidden="true" className="absolute left-0 top-0 bottom-0 w-14 z-[3] pointer-events-none bg-gradient-to-r from-white to-transparent" />
           <div aria-hidden="true" className="absolute right-0 top-0 bottom-0 w-14 z-[3] pointer-events-none bg-gradient-to-l from-white to-transparent" />
-          <button type="button" onClick={() => scrollBy(-0.8)} aria-label="Scroll teams left" className="absolute left-2 top-[34px] z-[4] w-10 h-10 flex items-center justify-center border border-slate-300 rounded-full bg-white shadow cursor-pointer">
+          <button type="button" onClick={() => scrollBy(-0.8)} aria-label="Scroll teams left" className="absolute left-2 top-[34px] z-[4] w-10 h-10 flex items-center justify-center border border-border rounded-full bg-card shadow cursor-pointer">
             <ChevronLeft className="w-[18px] h-[18px]" />
           </button>
-          <button type="button" onClick={() => scrollBy(0.8)} aria-label="Scroll teams right" className="absolute right-2 top-[34px] z-[4] w-10 h-10 flex items-center justify-center border border-slate-300 rounded-full bg-white shadow cursor-pointer">
+          <button type="button" onClick={() => scrollBy(0.8)} aria-label="Scroll teams right" className="absolute right-2 top-[34px] z-[4] w-10 h-10 flex items-center justify-center border border-border rounded-full bg-card shadow cursor-pointer">
             <ChevronRight className="w-[18px] h-[18px]" />
           </button>
 
           <div ref={viewportRef} tabIndex={0} role="region" aria-label="Teams. Scroll sideways to see more." className="flex-1 min-h-0 overflow-auto scroll-soft pb-3">
             {isLoading ? (
-              <p className="py-10 text-center text-slate-500">Loading teams…</p>
+              <p className="py-10 text-center text-muted-foreground">Loading teams…</p>
             ) : (
               <div role="list" aria-label="Teams" style={{ zoom, width: "max-content", padding: "0 40px" }} className="flex items-start">
                 {teams.map((t, i) => {
@@ -227,7 +227,7 @@ export default function TeamsMapPage() {
                         <div className="w-0.5 bg-slate-400" />
                         <div className={`flex-1 ${i === teams.length - 1 ? "" : "border-t-2 border-slate-400"}`} />
                       </div>
-                      <div className={`mx-2.5 bg-white rounded-xl flex flex-col border ${open ? "border-blue-300" : "border-slate-300"}`}>
+                      <div className={`mx-2.5 bg-card rounded-xl flex flex-col border ${open ? "border-info/40" : "border-border"}`}>
                         <button
                           type="button"
                           onClick={() => setExpanded((e) => ({ ...e, [t.team_id]: !open }))}
@@ -236,20 +236,20 @@ export default function TeamsMapPage() {
                         >
                           <span className="min-w-0 flex flex-col gap-0.5">
                             <span className="font-bold text-[15px] truncate">{t.name}</span>
-                            <span className="text-xs text-slate-600">
+                            <span className="text-xs text-muted-foreground">
                               {t.members.length} {t.members.length === 1 ? "member" : "members"}
                             </span>
                           </span>
                           <span className="flex-shrink-0 flex items-center gap-2">
                             {leadless && (
-                              <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-semibold">No lead</span>
+                              <span className="px-2 py-0.5 rounded-full bg-warning-soft text-warning-foreground text-[11px] font-semibold">No lead</span>
                             )}
-                            <ChevronDown className={`w-4 h-4 text-slate-600 transition-transform ${open ? "rotate-180" : ""}`} />
+                            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
                           </span>
                         </button>
 
                         {open && (
-                          <div className="px-2 pt-1 pb-2.5 border-t border-slate-200 flex flex-col gap-0.5">
+                          <div className="px-2 pt-1 pb-2.5 border-t border-border flex flex-col gap-0.5">
                             {sorted.map((m) => {
                               const name = fullName(m);
                               const marked = String(hover?.userId) === String(m.user_id);
@@ -264,13 +264,13 @@ export default function TeamsMapPage() {
                                     onFocus={() => setHover({ userId: m.user_id, teamId: t.team_id })}
                                     onBlur={() => setHover(null)}
                                     className={`flex items-center gap-2.5 w-full min-h-[40px] px-2 py-1 rounded-lg text-left cursor-default border ${
-                                      marked ? "bg-blue-50 border-blue-600" : "border-transparent"
+                                      marked ? "bg-info-soft border-info" : "border-transparent"
                                     }`}
                                   >
                                     <Avatar id={m.user_id} name={name} />
                                     <span className="flex-1 min-w-0 flex items-center gap-1.5">
                                       <span className="font-medium truncate">{name}</span>
-                                      {m.is_lead && <Star className="w-3.5 h-3.5 flex-shrink-0 fill-amber-400 text-amber-700" aria-label="Lead" />}
+                                      {m.is_lead && <Star className="w-3.5 h-3.5 flex-shrink-0 fill-amber-400 text-warning-foreground" aria-label="Lead" />}
                                     </span>
                                   </button>
 
@@ -278,30 +278,30 @@ export default function TeamsMapPage() {
                                     <div
                                       role="tooltip"
                                       style={{ width: 260, [i === teams.length - 1 ? "right" : "left"]: "calc(100% + 16px)" }}
-                                      className="absolute -top-1.5 z-10 bg-white border border-slate-300 rounded-xl shadow-xl p-3.5 flex flex-col gap-2.5"
+                                      className="absolute -top-1.5 z-10 bg-card border border-border rounded-xl shadow-xl p-3.5 flex flex-col gap-2.5"
                                     >
                                       <div className="flex items-center gap-2.5">
                                         <Avatar id={m.user_id} name={name} size={40} />
                                         <div className="min-w-0">
                                           <div className="font-bold truncate">{name}</div>
-                                          <div className="text-xs text-slate-600 truncate">{m.email}</div>
+                                          <div className="text-xs text-muted-foreground truncate">{m.email}</div>
                                         </div>
                                       </div>
-                                      <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-700">
-                                        <span className="px-2.5 py-[3px] rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-semibold">
+                                      <div className="flex flex-wrap items-center gap-1.5 text-xs text-foreground/90">
+                                        <span className="px-2.5 py-[3px] rounded-full bg-success-soft text-success-foreground text-[11px] font-semibold">
                                           {m.is_active === false ? "Inactive" : "Active"}
                                         </span>
                                         {m.added_at && <span>In the team since {new Date(m.added_at).toLocaleDateString()}</span>}
                                       </div>
                                       {memberTeams.length > 1 && (
                                         <div>
-                                          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Also in</div>
+                                          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Also in</div>
                                           {memberTeams
                                             .filter((x) => x.name !== t.name)
                                             .map((x) => (
                                               <div key={x.name} className="flex items-center justify-between gap-2 py-[3px] text-[13px]">
                                                 <span>{x.name}</span>
-                                                <span className="text-xs text-slate-600">{x.part}</span>
+                                                <span className="text-xs text-muted-foreground">{x.part}</span>
                                               </div>
                                             ))}
                                         </div>
@@ -311,7 +311,7 @@ export default function TeamsMapPage() {
                                 </div>
                               );
                             })}
-                            <Link to={`/teams/${t.team_id}`} className="mt-1 mx-1 text-[13px] font-semibold text-blue-700 no-underline">
+                            <Link to={`/teams/${t.team_id}`} className="mt-1 mx-1 text-[13px] font-semibold text-info no-underline">
                               Manage in Teams →
                             </Link>
                           </div>
@@ -320,7 +320,7 @@ export default function TeamsMapPage() {
                     </div>
                   );
                 })}
-                {!teams.length && <p className="px-10 py-10 text-slate-500">No active teams yet.</p>}
+                {!teams.length && <p className="px-10 py-10 text-muted-foreground">No active teams yet.</p>}
               </div>
             )}
           </div>
@@ -339,14 +339,14 @@ export default function TeamsMapPage() {
         title="Drag to resize (or use the arrow keys)"
         className="flex-shrink-0 h-[18px] flex items-center justify-center cursor-row-resize"
       >
-        <span aria-hidden="true" className="w-14 h-1 rounded-full bg-slate-300" />
+        <span aria-hidden="true" className="w-14 h-1 rounded-full bg-border" />
       </div>
 
       {/* Not in any team */}
-      <div className="flex-1 min-h-[72px] overflow-y-auto scroll-soft bg-white border border-slate-200 rounded-xl px-5 py-4">
+      <div className="flex-1 min-h-[72px] overflow-y-auto scroll-soft bg-card border border-border rounded-xl px-5 py-4">
         <div className="flex flex-wrap items-center gap-2.5">
           <h2 className="m-0 text-sm font-semibold">
-            Not in any team <span className="text-slate-600 font-medium">({unassigned.length})</span>
+            Not in any team <span className="text-muted-foreground font-medium">({unassigned.length})</span>
           </h2>
         </div>
 
@@ -355,7 +355,7 @@ export default function TeamsMapPage() {
             {unassigned.map((p) => {
               const name = fullName(p);
               return (
-                <span key={p.user_id} className="group flex items-center gap-2 min-h-[44px] pl-1 pr-1.5 py-1 bg-white border border-slate-200 rounded-full">
+                <span key={p.user_id} className="group flex items-center gap-2 min-h-[44px] pl-1 pr-1.5 py-1 bg-card border border-border rounded-full">
                   <Avatar id={p.user_id} name={name} />
                   <span className="font-medium">{name}</span>
                   <button
@@ -363,7 +363,7 @@ export default function TeamsMapPage() {
                     onClick={() => { setPickFor(p.user_id); setPickTeam(null); }}
                     title="Add to a team"
                     aria-label={`Add ${name} to a team`}
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-700 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity cursor-pointer"
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-info-soft text-info opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity cursor-pointer"
                   >
                     <Plus className="w-4 h-4" strokeWidth={2.5} />
                   </button>
@@ -372,7 +372,7 @@ export default function TeamsMapPage() {
             })}
           </div>
         ) : (
-          <p className="mt-2.5 mb-0 text-slate-600">Everyone is in a team.</p>
+          <p className="mt-2.5 mb-0 text-muted-foreground">Everyone is in a team.</p>
         )}
       </div>
 
@@ -380,16 +380,16 @@ export default function TeamsMapPage() {
 
       {picked && (
         <div className="fixed inset-0 z-50 bg-slate-900/45 flex items-start justify-center px-4 pt-24 pb-4">
-          <div role="dialog" aria-modal="true" aria-label="Add to a team" className="w-full max-w-[440px] bg-white rounded-2xl shadow-2xl p-5 flex flex-col gap-3.5">
+          <div role="dialog" aria-modal="true" aria-label="Add to a team" className="w-full max-w-[440px] bg-card rounded-lg shadow-2xl p-5 flex flex-col gap-3.5">
             <div className="flex items-center gap-2.5">
               <Avatar id={picked.user_id} name={fullName(picked)} size={40} />
               <div className="min-w-0">
                 <h2 className="m-0 text-base font-bold">Add {fullName(picked)} to a team</h2>
-                <p className="m-0 mt-0.5 text-xs text-slate-600 truncate">{picked.email}</p>
+                <p className="m-0 mt-0.5 text-xs text-muted-foreground truncate">{picked.email}</p>
               </div>
             </div>
 
-            <div role="radiogroup" aria-label="Choose a team" className="max-h-[260px] overflow-y-auto scroll-soft border border-slate-200 rounded-[10px]">
+            <div role="radiogroup" aria-label="Choose a team" className="max-h-[260px] overflow-y-auto scroll-soft border border-border rounded-[10px]">
               {teams.map((t) => {
                 const checked = String(pickTeam) === String(t.team_id);
                 return (
@@ -399,30 +399,30 @@ export default function TeamsMapPage() {
                     role="radio"
                     aria-checked={checked}
                     onClick={() => setPickTeam(t.team_id)}
-                    className={`flex items-center gap-2 w-full min-h-[44px] px-3 border-b border-slate-100 last:border-b-0 text-left cursor-pointer ${
-                      checked ? "bg-blue-100 text-blue-900 font-semibold" : "bg-white"
+                    className={`flex items-center gap-2 w-full min-h-[44px] px-3 border-b border-border last:border-b-0 text-left cursor-pointer ${
+                      checked ? "bg-info-soft text-info-foreground font-semibold" : "bg-card"
                     }`}
                   >
                     <span className="flex-1 min-w-0 truncate">{t.name}</span>
                     {!t.members.some((m) => m.is_lead) && (
-                      <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-semibold">No lead</span>
+                      <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-warning-soft text-warning-foreground text-[11px] font-semibold">No lead</span>
                     )}
                   </button>
                 );
               })}
             </div>
 
-            <p className="m-0 text-xs text-slate-500">They join as a member. Leads are set in the Teams tab.</p>
+            <p className="m-0 text-xs text-muted-foreground">They join as a member. Leads are set in the Teams tab.</p>
 
-            <div className="flex justify-end gap-2 pt-0.5 border-t border-slate-100">
-              <button type="button" onClick={() => { setPickFor(null); setPickTeam(null); }} className="min-h-[40px] px-3.5 border border-slate-300 rounded-lg bg-white cursor-pointer">
+            <div className="flex justify-end gap-2 pt-0.5 border-t border-border">
+              <button type="button" onClick={() => { setPickFor(null); setPickTeam(null); }} className="min-h-[40px] px-3.5 border border-border rounded-lg bg-card cursor-pointer">
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={addToTeam}
                 disabled={!pickTeam || busy}
-                className="min-h-[40px] px-4 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-semibold cursor-pointer"
+                className="min-h-[40px] px-4 rounded-lg bg-primary hover:opacity-90 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-semibold cursor-pointer"
               >
                 Add to team
               </button>

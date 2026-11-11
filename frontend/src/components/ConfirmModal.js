@@ -9,74 +9,68 @@ export default function ConfirmModal({
   permissions,
   userName,
   onClose,
-  onConfirm
+  onConfirm,
 }) {
   if (!isOpen) return null;
 
+  const granting = type === "onboard";
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-200">
-      <div className="relative w-full max-w-[440px] bg-white rounded-[32px] p-8 shadow-2xl border border-gray-100 flex flex-col gap-6 animate-in zoom-in-95 duration-200">
-        {/* Close button (X) */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35">
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="relative w-full max-w-[420px] ui-panel p-6 flex flex-col gap-5 shadow-panel"
+      >
         <button
+          type="button"
           onClick={onClose}
-          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground bg-transparent border-0 cursor-pointer"
+          aria-label="Close"
         >
-          <X className="size-5" />
+          <X className="size-4" />
         </button>
 
-        {/* Top Icon Badge */}
-        <div className="flex justify-start">
+        <div className="flex items-start gap-3">
           <div
-            className={`p-4 rounded-[22px] flex items-center justify-center shadow-xs ${
-              type === "onboard" ? "bg-[#e6f6ee] text-[#10a353]" : "bg-[#fdebeb] text-[#d91e36]"
+            className={`w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 ${
+              granting ? "bg-success-soft text-success" : "bg-danger-soft text-danger"
             }`}
           >
-            {type === "onboard" ? <UserPlus className="size-7" /> : <UserMinus className="size-7" />}
+            {granting ? <UserPlus className="size-5" /> : <UserMinus className="size-5" />}
+          </div>
+          <div>
+            <h3 className="m-0 text-[17px] font-semibold tracking-tight text-foreground">
+              {isAutomate ? "Automated" : "Manual"} {granting ? "grant" : "revoke"}
+            </h3>
+            <p className="mt-1.5 mb-0 text-[13px] text-muted-foreground leading-relaxed">
+              {granting ? "Grant" : "Revoke"}{" "}
+              <span className="font-semibold text-foreground">{permissions?.length || 0}</span>{" "}
+              {granting ? "to" : "from"} <span className="font-semibold text-foreground">{userName}</span>
+            </p>
           </div>
         </div>
 
-        {/* Title & Subtitle */}
-        <div>
-          <h3 className="text-[22px] font-bold text-gray-900 leading-tight">
-            {isAutomate ? "Automated" : "Manual"} {type === "onboard" ? "Grant" : "Revoke"}
-          </h3>
-          <p className="text-[#8e98a8] text-base font-medium mt-2">
-            {type === "onboard" ? "Granting" : "Revoking"}{" "}
-            <span className="font-bold text-gray-900">{permissions?.length || 0} permissions</span>{" "}
-            {type === "onboard" ? "to" : "from"}{" "}
-            <span className="font-bold text-gray-900">{userName}</span>
-          </p>
-        </div>
-
-        {/* Permissions List container */}
-        <div className="bg-[#f8f9fa] rounded-2xl p-5 border border-gray-100 max-h-[220px] overflow-y-auto">
-          <ul className="space-y-3">
+        <div className="bg-muted rounded-md p-3.5 border border-border max-h-[200px] overflow-y-auto scroll-soft">
+          <ul className="m-0 p-0 list-none space-y-2">
             {permissions?.map((name, idx) => (
-              <li key={idx} className="flex items-center gap-3 text-[15px] font-semibold text-gray-700">
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    type === "onboard" ? "bg-[#10a353]" : "bg-[#d91e36]"
-                  }`}
-                />
+              <li key={idx} className="flex items-center gap-2.5 text-[13px] font-medium text-foreground/90">
+                <span className={`w-1.5 h-1.5 rounded-full ${granting ? "bg-success" : "bg-danger"}`} />
                 {name}
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4">
-          <Button
-            onClick={onClose}
-            className="flex-1 bg-white hover:bg-gray-50 border border-gray-200 text-gray-900 font-semibold rounded-2xl py-6 text-base shadow-xs transition-colors"
-          >
+        <div className="flex gap-2.5">
+          <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
             Cancel
           </Button>
           <Button
+            type="button"
+            variant={granting ? "default" : "danger"}
+            className="flex-1"
             onClick={onConfirm}
-            className={`flex-1 text-white font-semibold rounded-2xl py-6 text-base shadow-xs transition-colors ${
-              type === "onboard" ? "bg-[#10a353] hover:bg-[#0d8c47]" : "bg-[#d91e36] hover:bg-[#c0152b]"
-            }`}
           >
             Confirm
           </Button>

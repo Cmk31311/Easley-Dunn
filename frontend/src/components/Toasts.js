@@ -52,17 +52,17 @@ export default function Toasts({ toasts, onDismiss }) {
           <div
             key={t.id}
             role="status"
-            className={`flex items-start gap-2.5 px-3.5 py-3 rounded-xl border shadow-lg backdrop-blur ${
-              isError ? "bg-red-50/95 border-red-200 text-red-900" : "bg-white/95 border-slate-200 text-slate-900"
+            className={`flex items-start gap-2.5 px-3.5 py-3 rounded-lg border shadow-panel ${
+              isError ? "bg-danger-soft border-danger/25 text-danger-foreground" : "bg-card border-border text-foreground"
             }`}
           >
-            <Icon className={`w-[18px] h-[18px] mt-0.5 flex-shrink-0 ${isError ? "text-red-600" : "text-emerald-600"}`} />
+            <Icon className={`w-[18px] h-[18px] mt-0.5 flex-shrink-0 ${isError ? "text-danger" : "text-success"}`} />
             <p className="m-0 flex-1 text-[13px] leading-snug">{t.text}</p>
             <button
               type="button"
               onClick={() => onDismiss(t.id)}
               aria-label="Dismiss"
-              className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-md text-slate-500 hover:bg-black/5 cursor-pointer"
+              className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted cursor-pointer bg-transparent border-0"
             >
               <X className="w-3.5 h-3.5" />
             </button>
