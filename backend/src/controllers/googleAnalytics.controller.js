@@ -43,7 +43,18 @@ async function getGoogleAnalyticsClient() {
   return auth.getClient();
 }
 
+/** Parent for new rows: env GOOGLE_ANALYTICS_PARENT_RESOURCE, else an existing access row. */
 async function getDefaultAnalyticsParentResource(pool) {
+  const fromEnv = process.env.GOOGLE_ANALYTICS_PARENT_RESOURCE;
+  if (fromEnv) {
+    if (!isValidParentResource(fromEnv)) {
+      throw new Error(
+        `GOOGLE_ANALYTICS_PARENT_RESOURCE must look like accounts/123456789 or properties/123456789 (got '${fromEnv}').`
+      );
+    }
+    return fromEnv;
+  }
+
   const { rows } = await pool.query(
     `SELECT usa.external_account_identifier
      FROM user_service_access usa
@@ -56,7 +67,8 @@ async function getDefaultAnalyticsParentResource(pool) {
 
   if (rows.length === 0) {
     throw new Error(
-      "No external_account_identifier found for Google Analytics. Expected accounts/123456789 or properties/123456789."
+      "No Google Analytics parent configured. Set GOOGLE_ANALYTICS_PARENT_RESOURCE " +
+        "(accounts/... or properties/...), or add a user_service_access row with external_account_identifier."
     );
   }
 

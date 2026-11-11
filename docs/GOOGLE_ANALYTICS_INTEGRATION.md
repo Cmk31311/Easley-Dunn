@@ -112,12 +112,14 @@ sequenceDiagram
 
 - `external_account_identifier`: Parent resource identifier (formatted as `accounts/123456789` or `properties/987654321`).
 - `external_user_identifier`: Stores resolved binding name (e.g. `accounts/123456789/accessBindings/1029384756`).
+- `GOOGLE_ANALYTICS_PARENT_RESOURCE`: Default parent when creating the first access row. See `deploy/guides/google-analytics-prod-key.md`.
 
 ---
 
 ## 11. Error Handling
 
 - **Invalid Parent Resource Format:** Validates format matching `/^(accounts|properties)\/[^/]+$/`; throws HTTP 400 if invalid.
+- **Missing parent:** Set `GOOGLE_ANALYTICS_PARENT_RESOURCE` if there is no existing access row to copy from.
 - **Binding Resolution Error:** Searches active bindings list by email if exact binding name is not stored in DB.
 
 ---

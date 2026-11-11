@@ -118,6 +118,7 @@ sequenceDiagram
 
 - `external_account_identifier`: GCP Project ID (e.g. `easleydunn-prod-123`).
 - `external_user_identifier`: User email address.
+- Prod key setup: `deploy/guides/google-cloud-prod-key.md`.
 
 ---
 
